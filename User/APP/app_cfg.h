@@ -38,7 +38,7 @@
 *********************************************************************************************************
 */
 
-#define APP_CFG_SERIAL_EN DEF_DISABLED // Modified by fire ��ԭ�� DEF_ENABLED��
+#define APP_CFG_SERIAL_EN DEF_DISABLED // Modified by fire ????? DEF_ENABLED??
 
 /*
 *********************************************************************************************************
@@ -46,10 +46,12 @@
 *********************************************************************************************************
 */
 
-#define APP_TASK_START_PRIO 2 // �������ȼ�
+#define APP_TASK_START_PRIO 2 // ?????????
 
-#define APP_TASK_LED2_PRIO 3
-#define APP_TASK_LED3_PRIO 3
+#define APP_TASK_LED2_PRIO 5
+#define APP_TASK_LED3_PRIO 5
+#define APP_TASK_KEY_PRIO 3
+#define APP_TASK_FLAG_PRIO 2
 
 /*
 *********************************************************************************************************
@@ -58,10 +60,12 @@
 *********************************************************************************************************
 */
 
-#define APP_TASK_START_STK_SIZE 128 // �����ջ�ռ䣨��λ��sizeof(CPU_STK)��
+#define APP_TASK_START_STK_SIZE 128 // ???????????��??sizeof(CPU_STK)??
 
 #define APP_TASK_LED2_STK_SIZE 512
 #define APP_TASK_LED3_STK_SIZE 512
+#define APP_TASK_KEY_STK_SIZE 512
+#define APP_TASK_FLAG_STK_SIZE 512
 
 /*
 *********************************************************************************************************
