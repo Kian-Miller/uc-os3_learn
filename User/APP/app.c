@@ -184,6 +184,15 @@ static void AppTaskStart(void *p_arg)
 				 (CPU_CHAR *)"FLAG For Test", // 事件标志组的名字
 				 (OS_FLAGS)0,				  // 事件标志组的初始值
 				 (OS_ERR *)&err);			  // 返回错误类型
+											  // I2C2 初始化
+
+	uint8_t A[] = "hello world!!";
+	OLED_Display_On();
+	OLED_Clear();
+	//	OLED_ShowNum(10,10,10,8,8);
+	//	OLED_ShowChar(0, 0,'C',16);
+	OLED_ShowString(0, 0, A, sizeof(A));
+	OLED_ShowCHinese(0, 1, 1);
 
 	/* 配置时间片轮转调度 */
 	OSSchedRoundRobinCfg((CPU_BOOLEAN)DEF_ENABLED, // 使能时间片轮转调度

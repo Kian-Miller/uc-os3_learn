@@ -238,6 +238,8 @@ void BSP_Init(void)
     Debug_USART_Config(); // 初始化 串口
 
     Key_GPIO_Config(); // 初始化 按键
+
+    OLED_Init(); // 初始化0.96-1315-OLED
 }
 
 /*
