@@ -37,6 +37,8 @@
 *                                       MODULE ENABLE / DISABLE
 *********************************************************************************************************
 */
+// 是否向STM32内部写入数据
+#define STM32_FLASH_WRITE 1u
 
 #define APP_CFG_SERIAL_EN DEF_DISABLED // Modified by fire ????? DEF_ENABLED??
 
@@ -46,7 +48,7 @@
 *********************************************************************************************************
 */
 
-#define APP_TASK_START_PRIO 2 // ?????????
+#define APP_TASK_START_PRIO 2
 
 #define APP_TASK_LED2_PRIO 5
 #define APP_TASK_LED3_PRIO 5
@@ -60,7 +62,7 @@
 *********************************************************************************************************
 */
 
-#define APP_TASK_START_STK_SIZE 128 // ???????????��??sizeof(CPU_STK)??
+#define APP_TASK_START_STK_SIZE 128
 
 #define APP_TASK_LED2_STK_SIZE 512
 #define APP_TASK_LED3_STK_SIZE 512

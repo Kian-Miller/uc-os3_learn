@@ -76,6 +76,7 @@
 #include "bsp_key.h"
 #include "./usart/bsp_debug_usart.h"
 #include "bsp_oled.h"
+#include "bsp_stmflash.h"
 
 /*
 *********************************************************************************************************

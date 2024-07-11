@@ -88,6 +88,12 @@ OS_FLAG_GRP flag_grp;		   // 声明事件标志组
 #define KEY0_EVENT (0x01 << 0) // 设置事件掩码的位0
 #define KEY1_EVENT (0x01 << 1) // 设置事件掩码的位1
 
+// 要写入到STM32 FLASH的字符串数组
+const u8 TEXT_Buffer[] = {"STM32 INSIDE FLASH TEST!!!!"};
+#define TEXT_LENTH (sizeof(TEXT_Buffer)) // 数组长度
+#define SIZE (TEXT_LENTH / 4 + ((TEXT_LENTH % 4) ? 1 : 0))
+u8 datatemp[SIZE * 4];
+
 /*
 *********************************************************************************************************
 *                                         FUNCTION PROTOTYPES
@@ -191,8 +197,8 @@ static void AppTaskStart(void *p_arg)
 	OLED_Clear();
 	//	OLED_ShowNum(10,10,10,8,8);
 	//	OLED_ShowChar(0, 0,'C',16);
-	OLED_ShowString(0, 0, A, sizeof(A));
-	OLED_ShowCHinese(0, 1, 1);
+	OLED_ShowString(0, 0, A, 8);
+	// OLED_ShowString(0, 3, A, 16);
 
 	/* 配置时间片轮转调度 */
 	OSSchedRoundRobinCfg((CPU_BOOLEAN)DEF_ENABLED, // 使能时间片轮转调度
@@ -292,7 +298,7 @@ static void AppTaskLed2(void *p_arg)
 			OSTaskRegSet(0, 0, 1, &err); // 将任务寄存器值归0
 
 			OSTaskResume(&AppTaskLed3TCB, &err); // 恢复 LED3 任务
-			// printf("恢复LED2任务！\n");
+												 // printf("恢复LED2任务！\n");
 			printf("resume task led3\n");
 		}
 		TimeStart = OS_TS_GET();
@@ -346,12 +352,15 @@ static void AppTaskKey(void *p_arg)
 	static u8 k0 = 0;
 
 	(void)p_arg;
-	printf("ERR:%d\n", err);
 	while (DEF_TRUE)
 	{
 		if (Key_Scan(KEY0_GPIO_PORT, KEY0_PIN) == KEY_ON)
 		{
-			printf("KEY0 was pressed\n,k0=%d,~K0=%d", k0, ~k0);
+			printf("KEY0 was pressed,k0=%d,~K0=%d\n", k0, ~k0);
+			// 首次下载运行，执行下列写入到内部FLASH的命令后，按键成功显示数据后，关闭下列代码，重新编译下载运行查看FLASH内持久化的数据
+#if STM32_FLASH_WRITE > 0u
+			STMFLASH_Write(INSIDE_FLASH_SAVE_ADDR, (u32 *)TEXT_Buffer, SIZE);
+#endif
 			OSFlagPost((OS_FLAG_GRP *)&flag_grp, // 将标志组的BIT0置1
 					   (OS_FLAGS)KEY0_EVENT,
 					   (OS_OPT)OS_OPT_POST_FLAG_SET,
@@ -373,7 +382,11 @@ static void AppTaskKey(void *p_arg)
 					   (OS_FLAGS)KEY1_EVENT,
 					   (OS_OPT)OS_OPT_POST_FLAG_SET,
 					   (OS_ERR *)&err);
-			printf("KEY1 was pressed, LED3 was suspend,err:%d\n", err);
+			printf("KEY1 was pressed, LED3 was suspend, err:%d\n", err);
+			STMFLASH_Read(INSIDE_FLASH_SAVE_ADDR, (u32 *)datatemp, SIZE);
+			datatemp[sizeof(datatemp) - 1] = '\0';
+			OLED_Clear();
+			OLED_ShowString(0, 0, datatemp, 16);
 			OSTaskSuspend((OS_TCB *)&AppTaskLed3TCB, &err);
 		}
 		OSTimeDlyHMSM(0, 0, 0, 20, OS_OPT_TIME_DLY, &err); // 每20ms扫描一次
