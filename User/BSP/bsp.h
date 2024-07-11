@@ -77,6 +77,7 @@
 #include "./usart/bsp_debug_usart.h"
 #include "bsp_oled.h"
 #include "bsp_stmflash.h"
+#include "w25qxx.h"
 
 /*
 *********************************************************************************************************

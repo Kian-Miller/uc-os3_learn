@@ -240,6 +240,9 @@ void BSP_Init(void)
     Key_GPIO_Config(); // 初始化 按键
 
     OLED_Init(); // 初始化0.96-1315-OLED
+
+    W25QXX_Init(); // 初始化外部FLASH
+    // W25QXX_Erase_Chip(); // 擦除整个外部FLASH
 }
 
 /*

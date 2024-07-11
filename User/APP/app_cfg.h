@@ -54,6 +54,7 @@
 #define APP_TASK_LED3_PRIO 5
 #define APP_TASK_KEY_PRIO 3
 #define APP_TASK_FLAG_PRIO 2
+#define APP_TASK_USART1_CMD_PRIO 2
 
 /*
 *********************************************************************************************************
@@ -63,11 +64,13 @@
 */
 
 #define APP_TASK_START_STK_SIZE 128
+#define APP_TASK_START_STK_SIZE 128
 
 #define APP_TASK_LED2_STK_SIZE 512
 #define APP_TASK_LED3_STK_SIZE 512
 #define APP_TASK_KEY_STK_SIZE 512
 #define APP_TASK_FLAG_STK_SIZE 512
+#define APP_TASK_USART1_CMD_STK_SIZE 1024
 
 /*
 *********************************************************************************************************

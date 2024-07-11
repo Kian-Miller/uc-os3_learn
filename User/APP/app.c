@@ -94,6 +94,10 @@ const u8 TEXT_Buffer[] = {"STM32 INSIDE FLASH TEST!!!!"};
 #define SIZE (TEXT_LENTH / 4 + ((TEXT_LENTH % 4) ? 1 : 0))
 u8 datatemp[SIZE * 4];
 
+u8 W25Q16ID[4];
+uint8_t FLASH_WRITE_BUFFER[20];
+uint8_t flash_read_buffer[sizeof(FLASH_WRITE_BUFFER)] = {0};
+
 /*
 *********************************************************************************************************
 *                                         FUNCTION PROTOTYPES
@@ -192,7 +196,7 @@ static void AppTaskStart(void *p_arg)
 				 (OS_ERR *)&err);			  // 返回错误类型
 											  // I2C2 初始化
 
-	uint8_t A[] = "hello world!!";
+	uint8_t A[] = "hello world!!gst1234567890gstgst";
 	OLED_Display_On();
 	OLED_Clear();
 	//	OLED_ShowNum(10,10,10,8,8);
@@ -338,7 +342,7 @@ static void AppTaskLed3(void *p_arg)
 		{
 			OSTaskRegSet(0, 0, 0, &err); // 将任务寄存器值归0
 
-			printf("suspend task led3(self)\n");
+			// printf("suspend task led3(self)\n");
 			OSTaskSuspend(0, &err); // 挂起自身
 		}
 
@@ -349,6 +353,7 @@ static void AppTaskLed3(void *p_arg)
 static void AppTaskKey(void *p_arg)
 {
 	OS_ERR err;
+	u16 count = 0;
 	static u8 k0 = 0;
 
 	(void)p_arg;
@@ -388,6 +393,27 @@ static void AppTaskKey(void *p_arg)
 			OLED_Clear();
 			OLED_ShowString(0, 0, datatemp, 16);
 			OSTaskSuspend((OS_TCB *)&AppTaskLed3TCB, &err);
+		}
+		if (Key_Scan(OLED_KEY_PORT, OLED_KEY3_PIN) == KEY_ON)
+		{
+			OLED_ShowChar(0, 4, '#', 16);
+			W25QXX_TYPE = W25QXX_ReadID();
+			sprintf(W25Q16ID, "%03X", W25QXX_TYPE);
+			OLED_ShowString(8, 4, W25Q16ID, 16);
+			OLED_ShowChar(40, 4, ':', 16);
+			OLED_ShowNum(48, 4, ++count, 4, 16);
+			// 写入数据到 Flash
+			memset(FLASH_WRITE_BUFFER, '0', sizeof(FLASH_WRITE_BUFFER));
+			sprintf(FLASH_WRITE_BUFFER, "%03d", count);
+			W25QXX_Write(FLASH_WRITE_BUFFER, W25QXX_TEST_ADDR, sizeof(FLASH_WRITE_BUFFER));
+		}
+		if (Key_Scan(OLED_KEY_PORT, OLED_KEY4_PIN) == KEY_ON)
+		{
+			OLED_ShowChar(0, 6, '*', 16);
+			// 读取数据从 Flash
+			W25QXX_Read(flash_read_buffer, W25QXX_TEST_ADDR, sizeof(FLASH_WRITE_BUFFER));
+			// 显示读取的数据
+			OLED_ShowString(8, 6, (char *)flash_read_buffer, sizeof(FLASH_WRITE_BUFFER));
 		}
 		OSTimeDlyHMSM(0, 0, 0, 20, OS_OPT_TIME_DLY, &err); // 每20ms扫描一次
 	}

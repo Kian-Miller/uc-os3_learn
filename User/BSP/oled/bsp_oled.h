@@ -4,12 +4,25 @@
 #include "bsp_i2c.h"
 
 #define OLED_ADDRESS 0x78 // OLED I2C address
+#define OLED_LENGTH 128
+#define OLED_WIDTH 64
+#define DISPLAY_SIZE 16
+// 引脚定义
+/*******************************************************/
+// OLED KEY
+#define OLED_KEY3_PIN GPIO_Pin_5 // #
+#define OLED_KEY4_PIN GPIO_Pin_6 // *
+#define OLED_KEY_PORT GPIOE
+#define OLED_KEY_CLK RCC_AHB1Periph_GPIOE
+/*******************************************************/
 
 void WriteCmd(void);
 // 向设备写控制命令
 void OLED_WR_CMD(uint8_t cmd);
 // 向设备写数据
 void OLED_WR_DATA(uint8_t data);
+// 初始化OLED按键
+void OLED_Key_GPIO_Config(void);
 // 初始化oled屏幕
 void OLED_Init(void);
 // 清屏

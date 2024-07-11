@@ -18,6 +18,17 @@ void OLED_WR_DATA(uint8_t data)
 {
     I2C2_Write(OLED_ADDRESS, 0x40, data);
 }
+void OLED_Key_GPIO_Config(void)
+{
+    GPIO_InitTypeDef GPIO_InitStruct;
+    // 开启按键时钟
+    RCC_AHB1PeriphClockCmd(OLED_KEY_CLK, ENABLE);
+    GPIO_InitStruct.GPIO_Pin = OLED_KEY3_PIN | OLED_KEY4_PIN;
+    GPIO_InitStruct.GPIO_Mode = GPIO_Mode_IN;
+    GPIO_InitStruct.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_UP;
+    GPIO_Init(OLED_KEY_PORT, &GPIO_InitStruct);
+}
 
 void OLED_Init(void)
 {
@@ -27,6 +38,7 @@ void OLED_Init(void)
     {
         OLED_WR_CMD(CMD_Data[i]);
     }
+    OLED_Key_GPIO_Config();
 }
 
 void OLED_Clear(void)
@@ -93,7 +105,7 @@ void OLED_ShowChar(uint8_t x, uint8_t y, uint8_t chr, uint8_t Char_Size)
 {
     unsigned char c = 0, i = 0;
     c = chr - ' '; // 得到偏移后的值
-    if (x > 128 - 1)
+    if (x > OLED_LENGTH - 1)
     {
         x = 0;
         y = y + 2;
@@ -152,6 +164,7 @@ void OLED_ShowString(uint8_t x, uint8_t y, uint8_t *chr, uint8_t Char_Size)
         {
             x = 0;
             y += 2;
+            // y += 1;
         }
         j++;
     }
@@ -177,6 +190,5 @@ void OLED_ShowCHinese(uint8_t x, uint8_t y, uint8_t no)
 void Delay(__IO uint32_t nCount)
 {
     while (nCount--)
-    {
-    }
+        ;
 }

@@ -26,6 +26,7 @@ C. 浮点运算单元：
 2. 按键切换LED点亮任务的挂起和恢复
 3. I2C通信，点亮0.96寸I2C IIC通信 128*64 OLED液晶屏模块（驱动是SSD1315）,显示字符串和汉字
 4. 使用内部空闲的FLASH持久化数据，并在断电重启时再次获取数据
+5. 
 
 ### 【 ！】实验
 #### 实验一
@@ -74,20 +75,19 @@ OLED显示字符串hello world!!和汉字‘尖’
 ##### 目的：
 1. 使用STM32内部空闲的FLASH，持久化保存数据，并在重新上电运行时读取数据
 ##### 操作：
-1. 选择一块空闲的内存卡作为存储FLASH，可以通过Listing/xxx.map，如下所示，计算得到空闲位置：
-```json
-  Memory Map of the image
-
-  Image Entry point : 0x08000189
-
-  Load Region LR_IROM1 (Base: 0x08000000, Size: 0x000080b4, Max: 0x00080000, ABSOLUTE, COMPRESSED[0x00007f8c])
-
-    Execution Region ER_IROM1 (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x00007f28, Max: 0x00080000, ABSOLUTE)
-
-    Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
-```
-1. 按下K0,向空闲FLASH内写入数据(注意数据要对齐,写入读取时是按照32位操作的)
-2. 断电，重新上电后，按下K1，从空闲内存块读取数据，并显示到OLED上
+1. W25Q16是通过SPI协议与MCU进行数据传输
+   1. SPI GPIO的初始化，引脚复用和SPI1初始化设置，配置SPI1 SCK, MISO和MOSI引脚(PB3, PB4, PB5) F_CS引脚(PB0)
+   2. 操作SPI发送和接收缓存区，读取数据
+2. 按页读取数据，要注意在操作数据时跨页跨扇要单独处理
 ##### 现象：
 1. 数据写入到空闲FLASH
 2. 断电重启后可以再次读取数据并显示
+
+#### 实验五
+##### 目的：
+1. 使用外部FLASH W25Q16，持久化保存数据，并在重新上电运行时读取数据
+##### 操作：
+1. 按下K#,向空闲FLASH内写入数据(注意数据要对齐,写入读取时是按照32位操作的)
+2. 断电，重新上电后，按下K*，从空闲内存块读取数据，并显示到OLED上
+##### 现象：
+1. 能够持续的往W25Q16写入计数值，并能够读取写入的数据
